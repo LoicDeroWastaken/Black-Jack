@@ -1,0 +1,169 @@
+<<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="Black Jack" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <script src="js.js" async defer></script>
+        <button ondblclick="jouer()">Jouer</button>
+    </body>
+</html>
+/* a encore faire : 
+- définir que l'as peut valoir 1 ou 11
+- changer la phrase quand l'ordi prend une carte
+- faire joué l'IA 
+
+*/
+
+
+function jouer(){
+//initialisation :
+
+    let carreau = [1,2,3,4,5,6,7,8,9,10,10,10,10];          // ♢
+    let coeur = [1,2,3,4,5,6,7,8,9,10,10,10,10];            // ♡
+    let pique = [1,2,3,4,5,6,7,8,9,10,10,10,10];            // ♤
+    let trefle = [1,2,3,4,5,6,7,8,9,10,10,10,10];           // ♧
+
+    let mainJ = [];
+    let mainIA = [];
+
+    let totalJ = 0
+    let totalIA = 0
+
+    let couleur = 0;                                     // définira dans quel tableau on va chercher la carte.
+    let position = 0;                                   // définira quel position on prend la carte.
+
+    let carte = 0
+
+    function nbrHasard(max){                            //Cherche un nombre au hasard entre 0 et au max
+        return Math.floor(Math.random() * max);
+    }
+
+
+//distribution des cartes :
+
+    function tirerUneCarteJ(){
+
+        couleur = nbrHasard(4)                              // défini dans quel tableau on va chercher la carte.
+    
+        if (couleur == 0){
+            position = nbrHasard(carreau.length)
+            carte = carreau.splice(position,1)
+            carte = carte[0]
+            console.log("Vous avez pioché "+ carte +" ♢")
+            mainJ.push(carte)
+        }
+    
+        if (couleur == 1){
+            position = nbrHasard(coeur.length)
+            carte = coeur.splice(position,1)
+            carte = carte[0]
+            console.log("Vous avez pioché "+ carte +" ♡")
+            mainJ.push(carte)
+        }
+    
+        if (couleur == 2){
+            position = nbrHasard(pique.length)
+            carte = pique.splice(position,1)
+            carte = carte[0]
+            console.log("Vous avez pioché "+ carte +" ♤")
+            mainJ.push(carte)
+        }
+    
+        if (couleur == 3){
+            position = nbrHasard(trefle.length)
+            carte = trefle.splice(position,1)
+            carte = carte[0]
+            console.log("Vous avez pioché "+ carte +" ♧")
+            mainJ.push(carte)
+        }
+}
+
+    function tirerUneCarteIA(){
+
+        couleur = nbrHasard(4)                              // défini dans quel tableau on va chercher la carte.
+        position = nbrHasard(12)                            // défini quel position on prend la carte.
+    
+        if (couleur == 0){
+            carte = carreau.splice(position,1)
+            carte = carte[0]
+            mainIA.push(carte)
+        }
+    
+        if (couleur == 1){
+            carte = coeur.splice(position,1)
+            carte = carte[0]
+            mainIA.push(carte)
+        }
+    
+        if (couleur == 2){
+            carte = pique.splice(position,1)
+            carte = carte[0]
+            mainIA.push(carte)
+        }
+    
+        if (couleur == 3){
+            carte = trefle.splice(position,1)
+            carte = carte[0]
+            mainIA.push(carte)  
+        }
+}
+
+
+    function compteJeu(qui){
+        let somme = 0
+        for (let i =0; i < qui.length; i++){
+            somme += qui[i] 
+        }
+        return somme
+    }
+
+
+// LE JEU :
+
+    tirerUneCarteJ()
+    tirerUneCarteIA()
+    tirerUneCarteJ()
+    tirerUneCarteIA()
+
+//quand on dépasse 21, on arrête de demandé si il veut une carte
+
+    while (totalJ < 21){
+        prmt = prompt("veux tu une nouvelle carte ? (o/n)")
+        if (prmt == "n"){
+        break
+        }
+        tirerUneCarteJ()
+        totalJ = compteJeu(mainJ)
+    };
+
+    totalIA = compteJeu(mainIA)
+    totalJ = compteJeu(mainJ)
+
+
+
+    while(totalIA < totalJ){
+        tirerUneCarteIA()
+        totalIA = compteJeu(mainIA)
+    }
+
+
+
+
+    if ((totalJ <= 21) && (totalJ > totalIA)){
+        console.log("Félicitations, vous avez gagnez car tu a eu "+totalJ+" et l'IA a eu : "+totalIA)
+    }
+    if ((totalIA <= 21) && (totalIA >= totalJ)){
+        console.log("Ta perdu car tu a eu "+totalJ +" et l'IA : "+ totalIA)
+    }
+    if (totalJ > 21){
+        console.log("Dépassé 21, tu as donc perdu...")
+    }
+    if ((totalIA > 21) && (totalJ <= 21)){
+        console.log("tu as gagné avec "+totalJ +" car L'IA a eu "+ totalIA)
+    }
+}
